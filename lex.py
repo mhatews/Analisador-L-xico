@@ -4,41 +4,46 @@ from tkinter import filedialog
 
 # Define os nomes dos tokens
 tokens = [
-'tipo',
-'inteiro',
-'real',
-'cadeia_car',
-'para',
-'se',
-'senao',
-'enquanto',
-'escreva',
-'leia'
+    'TIPO',
+    'INTEIRO',
+    'REAL',
+    'CADEIA_CAR',
+    'PARA',
+    'SE',
+    'SENAO',
+    'ENQUANTO',
+    'ESCREVA',
+    'LEIA'
 ]
 
-# Define as expressões regulares para cada token
-T_tipo = r'^(int|real|texto|bool)$'
-T_inteiro = r'^[+-]?\d+$'
-T_real = r'^-?\d+(\.\d+)?$'
-T_cadeia_car = r'^".*"$'
-T_para = r'^para$'
-T_se = r'^se$'
-T_senao = r'^senao$'
-T_enquanto = r'^enquanto$'
-T_escreva = r'^escreva$'
-T_leia = r'^leia$'
+# Expressões regulares para cada token
+t_TIPO = r'int|real|texto|bool'
+t_INTEIRO = r'([+-])?\d+'
+t_REAL = r'-?\d+(.\d+)?'
+t_CADEIA_CAR = r'".*?"'
+t_PARA = r'para'
+t_SE = r'se'
+t_SENAO = r'senao'
+t_ENQUANTO = r'enquanto'
+t_ESCREVA = r'escreva'
+t_LEIA = r'leia'
 
+# Ignora espaços em branco e tabulações
+t_ignore = ' \t'
 
+# Ignora comentários
+def t_COMMENT(t):
+    r'\/\/.*'
+    pass
 
-# Define o tratamento de erros
+# Tratamento de erros
 def t_error(t):
-    print(f"Erro: caracter inválido '{t.value[0]}'")
+    print("Caractere inválido '%s'" % t.value[0])
     t.lexer.skip(1)
 
 # Cria o analisador léxico
 lexer = lex.lex()
 
-# Define a função para analisar o texto
 def analyze_text():
     input_string = text_input.get('1.0', tk.END)
     tokenize(input_string)
@@ -48,7 +53,7 @@ def tokenize(input_string):
     output_string = ''
     lexer.input(input_string)
     for token in lexer:
-        output_string += str(token) + '\n'
+        output_string += 'Token: {}, valor: {}, linha: {}, coluna: {}\n'.format(token.type, token.value, token.lineno, token.lexpos - input_string.rfind("\n", 0, token.lexpos))
     text_output.configure(state='normal')
     text_output.delete('1.0', tk.END)
     text_output.insert('1.0', output_string)
@@ -80,7 +85,7 @@ button_analyze = tk.Button(root, text='Analisar', command=analyze_text)
 button_analyze.pack()
 
 # Cria um campo para exibir o resultado
-text_output = tk.Text(root, state='disabled')
+text_output = tk.Text(root, state='normal')
 text_output.pack()
 
 # Inicia a interface gráfica

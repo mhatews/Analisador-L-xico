@@ -2,6 +2,25 @@ import ply.lex as lex
 import tkinter as tk
 from tkinter import filedialog
 
+reserved = {
+    'se': 'SE',
+    'senao': 'SENAO',
+    'enquanto': 'ENQUANTO',
+    'leia': 'LEIA',
+    'escreva': 'ESCREVA',
+    'para': 'PARA',
+    'funk': 'FUNK',
+    'retorna': 'RETORNA',
+    'ifsuldeminas': 'IFSULDEMINAS',
+    'inicio': 'INICIO',
+    'compiladores': 'COMPILADORES',
+    'fim': 'FIM',
+    'int': 'INT',
+    'real': 'REAL',
+    'bool': 'BOOLEANO',
+    'texto': 'TEXTO',
+}
+
 # Define os nomes dos tokens
 tokens = [
     'VAR',
@@ -35,24 +54,13 @@ tokens = [
     'STR_INCOMPLETA',
     'VAR_ERRO',
     'NUM_ERRO',
-    'IFSULDEMINAS',
-    'INICIO',
-    'COMPILADORES',
-    'FIM',
-]
+]+ list(reserved.values())
 
 # Expressões regulares para cada token
 t_VAR = r'([a-zA-Z_]+)\d*\w*'
-t_TIPO = r'(int|real|texto|bool)'
 t_INTEIRO = r'([+-])?\d+'
 t_REAL = r'(([+-])?\d+)[.]\d+'
-t_CADEIA_CAR = r'".*?"'
-t_PARA = r'para'
-t_SE = r'se'
-t_SENAO = r'senao'
-t_ENQUANTO = r'enquanto'
-t_ESCREVA = r'escreva'
-t_LEIA = r'leia'
+t_CADEIA_CAR = r'"[^"]*"'
 t_ABRE_COLCH = r'\['
 t_FECHA_COLCH = r'\]'
 t_ABRE_CHAV = r'{'
@@ -66,19 +74,20 @@ t_OPER_MAT = r'(\+|\-|\*|\/|\%)'
 t_ITERADORES = r'(ate|passo)'
 t_NEGACAO = r'!'
 t_OPER_LOG = r'(&&|\|\|)'
-t_FUNK = r'funk'
 t_NOME_FUNK = r'[a-zA-Z_]\w*[ ][(].*?[)]'
-t_RETORNO = r'retorna'
 t_COMENTARIO = r'\#.*'
-t_STR_INCOMPLETA = r'"[^"]+'
+t_STR_INCOMPLETA = r'"[^"]*'
 t_VAR_ERRO = r'([0-9]+[a-z]+)|([@!#$%&*]+[a-z]+|[a-z]+\.[0-9]+|[a-z]+[@!#$%&*]+)'
 t_NUM_ERRO= r'([0-9]+\.[a-z]+[0-9]+)|([0-9]+\.[a-z]+)|([0-9]+\.[0-9]+[a-z]+)'
-t_IFSULDEMINAS = r'ifsuldeminas'
-t_INICIO = r'inicio'
-t_FIM = r'fim'
 
 # Ignora espaços em branco e tabulações
 t_ignore = ' \t'
+
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value, 'VAR')  # verifica se é uma palavra reservada
+    return t
 
 # Ignora comentários
 def t_COMMENT(t):

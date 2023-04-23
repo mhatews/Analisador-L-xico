@@ -2,9 +2,9 @@ texto nome;
 
 leia(nome);
 
-se (nome != “Wallace”){
-	escreva(“Nome incorreto, tente novamente”);
+se (nome != "Wallace"){
+	escreva("Nome incorreto, tente novamente");
 }
 senao {
-	escreva(“Parabéns você acertou o nome”);
+	escreva("Parabéns você acertou o nome");
 }

@@ -78,29 +78,26 @@ t_OPER_LOG = r'(&&|\|\|)'
 t_NOME_FUNK = r'[a-zA-Z_]\w*[ ][(].*?[)]'
 t_STR_INCOMPLETA = r'"[^"]*'
 t_VAR_ERRO = r'([0-9]+[a-z]+)|([@!#$%&*]+[a-z]+|[a-z]+\.[0-9]+|[a-z]+[@!#$%&*]+)'
-t_NUM_ERRO= r'([0-9]+\.[a-z]+[0-9]+)|([0-9]+\.[a-z]+)|([0-9]+\.[0-9]+[a-z]+)'
+t_NUM_ERRO = r'^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?[^0-9]*$'
+
 
 # Ignora espaços em branco e tabulações
 t_ignore = ' \t'
 
 
+
 def t_VAR(t):
     r'([a-zA-Z_]+)\d*\w*'
-    if t.value in reserved:
+    if t.value in reserved:# verifica se é uma palavra reservada
         t.type = reserved[t.value]
-    elif t.value in reserved_funk:
+    elif t.value in reserved_funk:# verifica se é uma Função
         t.type = 'NOME_FUNK'
     return t
 
 
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reserved.get(t.value, 'VAR')  # verifica se é uma palavra reservada
-    return t
-
 # Ignora comentários
 def t_COMMENT(t):
-    r'\/\/\#.*'
+    r'\//(.*?)\//'
     pass
 
 
@@ -116,7 +113,7 @@ def t_error(t):
     last_newline_index = t.lexer.lexdata.rfind('\n', 0, t.lexpos)
     line = t.lexer.lineno
     column = t.lexpos - last_newline_index
-    error_message = f"Linha {line}, Coluna {column}: Caracter Invalido {t.value[0]!r}"
+    error_message = f"Caracter Invalido {t.value[0]!r} linha {t.lineno}"
     errors.append(error_message)
     t.lexer.skip(1)
  
@@ -142,18 +139,18 @@ def tokenize(input_string):
         output_string += 'Token: {}, valor: {}, linha: {}, coluna: {}\n'.format(token.type, token.value, token.lineno, token.lexpos - input_string.rfind("\n", 0, token.lexpos))
 
         if token.type == "STR_INCOMPLETA":
-            error_message = f"String Mal formada {token.value!r}"
+            error_message = f"String Mal formada {token.value!r} linha {token.lineno}"
             errors.append(error_message)
         if token.type == "VAR_ERRO":
-            error_message = f"Variavel Mal formada {token.value!r}"
+            error_message = f"Variavel Mal formada {token.value!r} linha {token.lineno}"
             errors.append(error_message)
         if token.type == "NUM_ERRO":
-            error_message = f"Número Mal formada {token.value!r}"
+            error_message = f"Número Mal formado {token.value!r} linha {token.lineno}"
             errors.append(error_message)
         if token.type == "INTEIRO":
             max = (len(str(token.value)))
-            if (max > 30):
-                error_message = f"Entrada maior que a suportada"
+            if (max > 10):
+                error_message = f"Entrada maior que a suportada linha {token.lineno}"
                 errors.append(error_message)
                 
     output_string += f'\nNúmero de linhas: {num_lines}'

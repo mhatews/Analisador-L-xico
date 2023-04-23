@@ -112,8 +112,7 @@ def analyze_text():
 def t_error(t):
     last_newline_index = t.lexer.lexdata.rfind('\n', 0, t.lexpos)
     line = t.lexer.lineno
-    column = t.lexpos - last_newline_index
-    error_message = f"Caracter Invalido {t.value[0]!r} linha {t.lineno}"
+    error_message = f"Caracter Invalido {t.value[0]!r} linha {line}"
     errors.append(error_message)
     t.lexer.skip(1)
  

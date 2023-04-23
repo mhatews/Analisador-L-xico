@@ -132,25 +132,27 @@ def tokenize(input_string):
     num_lines = input_string.count('\n')
     for token in lexer:
         output_string += 'Token: {}, valor: {}, linha: {}, coluna: {}\n'.format(token.type, token.value, token.lineno, token.lexpos - input_string.rfind("\n", 0, token.lexpos))
-    output_string += f'\nNúmero de linhas: {num_lines}' + '\n'
+
+        if token.type == "STR_INCOMPLETA":
+            error_message = f"String Mal formada {token.value!r}"
+            errors.append(error_message)
+        if token.type == "VAR_ERRO":
+            error_message = f"Variavel Mal formada {token.value!r}"
+            errors.append(error_message)
+        if token.type == "NUM_ERRO":
+            error_message = f"Número Mal formada {token.value!r}"
+            errors.append(error_message)
+        if token.type == "INTEIRO":
+            max = (len(str(token.value)))
+            if (max < 200):
+                error_message = f"Entrada maior que a suportada"
+                errors.append(error_message)
+                
+    output_string += f'\nNúmero de linhas: {num_lines}'
     error_message = lexer.token()
     text_output.configure(state='normal')
     text_output.delete('1.0', tk.END)
     text_output.insert('1.0', output_string)
-    if token.type == "STR_INCOMPLETA":
-        error_message = f"String Mal formada {token.value!r}"
-        errors.append(error_message)
-    if token.type == "VAR_ERRO":
-        error_message = f"Variavel Mal formada {token.value!r}"
-        errors.append(error_message)
-    if token.type == "NUM_ERRO":
-        error_message = f"Número Mal formada {token.value!r}"
-        errors.append(error_message)
-    if token.type == "INTEIRO":
-        max = (len(str(token.value)))
-        if (max < 15):
-            error_message = f"Entrada maior que a suportada"
-            errors.append(error_message)
     if errors:
         text_output.insert(tk.END, "\n\nErros encontrados:\n")
         for error in errors:

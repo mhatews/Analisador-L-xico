@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog
 
 errors = []
-
+reserved_funk = ['fatorial']
 
 reserved = {
     'se': 'SE',
@@ -59,7 +59,6 @@ tokens = [
 ]+ list(reserved.values())
 
 # Expressões regulares para cada token
-t_VAR = r'([a-zA-Z_]+)\d*\w*'
 t_INTEIRO = r'([+-])?\d+'
 t_REAL = r'(([+-])?\d+)[.]\d+'
 t_CADEIA_CAR = r'"[^"]*"'
@@ -83,6 +82,15 @@ t_NUM_ERRO= r'([0-9]+\.[a-z]+[0-9]+)|([0-9]+\.[a-z]+)|([0-9]+\.[0-9]+[a-z]+)'
 
 # Ignora espaços em branco e tabulações
 t_ignore = ' \t'
+
+
+def t_VAR(t):
+    r'([a-zA-Z_]+)\d*\w*'
+    if t.value in reserved:
+        t.type = reserved[t.value]
+    elif t.value in reserved_funk:
+        t.type = 'NOME_FUNK'
+    return t
 
 
 def t_ID(t):

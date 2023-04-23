@@ -4,7 +4,7 @@ from tkinter import filedialog
 
 errors = []
 
-reserved_functions = ['teste']
+reserved_functions = ['teste', 'fatorial']
 
 
 reserved = {

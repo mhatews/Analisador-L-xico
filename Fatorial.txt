@@ -1,0 +1,8 @@
+funk fatorial(n){
+	int resultado = 1;
+	int i;
+	para(i = 1; i <= n; i++){
+		resultado = resultado * i;
+	}
+	retorno resultado;
+}

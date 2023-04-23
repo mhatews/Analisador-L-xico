@@ -1,0 +1,6 @@
+int x = 10;
+real y = 2.5;
+
+real resultado = x + y;
+
+escreva(resultado);

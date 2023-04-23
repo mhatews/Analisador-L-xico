@@ -1,11 +1,9 @@
 import ply.lex as lex
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import ttk, filedialog
 
 errors = []
-
-reserved_functions = ['teste', 'fatorial']
-
+reserved_funk = ['fatorial']
 
 reserved = {
     'se': 'SE',
@@ -85,9 +83,12 @@ t_NUM_ERRO= r'([0-9]+\.[a-z]+[0-9]+)|([0-9]+\.[a-z]+)|([0-9]+\.[0-9]+[a-z]+)'
 # Ignora espaços em branco e tabulações
 t_ignore = ' \t'
 
+
 def t_VAR(t):
     r'([a-zA-Z_]+)\d*\w*'
-    if t.value in reserved_functions:
+    if t.value in reserved:
+        t.type = reserved[t.value]
+    elif t.value in reserved_funk:
         t.type = 'NOME_FUNK'
     return t
 
@@ -139,25 +140,27 @@ def tokenize(input_string):
     num_lines = input_string.count('\n')
     for token in lexer:
         output_string += 'Token: {}, valor: {}, linha: {}, coluna: {}\n'.format(token.type, token.value, token.lineno, token.lexpos - input_string.rfind("\n", 0, token.lexpos))
-    output_string += f'\nNúmero de linhas: {num_lines}' + '\n'
+
+        if token.type == "STR_INCOMPLETA":
+            error_message = f"String Mal formada {token.value!r}"
+            errors.append(error_message)
+        if token.type == "VAR_ERRO":
+            error_message = f"Variavel Mal formada {token.value!r}"
+            errors.append(error_message)
+        if token.type == "NUM_ERRO":
+            error_message = f"Número Mal formada {token.value!r}"
+            errors.append(error_message)
+        if token.type == "INTEIRO":
+            max = (len(str(token.value)))
+            if (max > 30):
+                error_message = f"Entrada maior que a suportada"
+                errors.append(error_message)
+                
+    output_string += f'\nNúmero de linhas: {num_lines}'
     error_message = lexer.token()
     text_output.configure(state='normal')
     text_output.delete('1.0', tk.END)
     text_output.insert('1.0', output_string)
-    if token.type == "STR_INCOMPLETA":
-        error_message = f"String Mal formada {token.value!r}"
-        errors.append(error_message)
-    if token.type == "VAR_ERRO":
-        error_message = f"Variavel Mal formada {token.value!r}"
-        errors.append(error_message)
-    if token.type == "NUM_ERRO":
-        error_message = f"Número Mal formada {token.value!r}"
-        errors.append(error_message)
-    if token.type == "INTEIRO":
-        max = (len(str(token.value)))
-        if (max < 15):
-            error_message = f"Entrada maior que a suportada"
-            errors.append(error_message)
     if errors:
         text_output.insert(tk.END, "\n\nErros encontrados:\n")
         for error in errors:
@@ -180,22 +183,32 @@ def open_file():
 
 # Cria a janela principal da interface gráfica
 root = tk.Tk()
+root.title("BR Script")
 
-# Cria um botão para abrir o arquivo
-button_open = tk.Button(root, text='Abrir arquivo', command=open_file)
-button_open.pack()
+style = ttk.Style()
+style.configure("TButton", background="gray25", foreground="black", font=("Helvetica", 12))
+style.configure("TLabel", background="gray25", foreground="black", font=("Helvetica", 16))
+
 
 # Cria um campo para digitar o texto
-text_input = tk.Text(root)
-text_input.pack()
+text_input = tk.Text(root, font=("Helvetica", 14),width=70, height=10)
+text_input.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+
+# Cria um botão para abrir o arquivo
+btn_open = ttk.Button(root, text="Abrir Arquivo", command=open_file)
+btn_open.grid(row=1, column=0, padx=10, pady=10)
 
 # Cria um botão para analisar o texto
-button_analyze = tk.Button(root, text='Analisar', command=analyze_text)
-button_analyze.pack()
+btn_analyze = ttk.Button(root, text="Analisar Texto", command=analyze_text)
+btn_analyze.grid(row=1, column=1, padx=10, pady=10)
+
+btn_quit = ttk.Button(root, text="Sair", command=root.quit)
+btn_quit.grid(row=1, column=2, padx=10, pady=10)
+
 
 # Cria um campo para exibir o resultado
-text_output = tk.Text(root, state='disable')
-text_output.pack()
+text_output = tk.Text(root, height=10, font=("Helvetica", 14), width=70)
+text_output.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
 
 # Inicia a interface gráfica
 root.mainloop()

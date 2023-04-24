@@ -3,8 +3,6 @@ import tkinter as tk
 from tkinter import filedialog
 import re
 
-errors = []
-
 reserved = {
     'se': 'SE',
     'senao': 'SENAO',
@@ -58,6 +56,8 @@ tokens = [
     'NUM_ERRO',
 ]+ list(reserved.values())
 
+errors = []
+
 # Expressões regulares para cada token
 t_VAR = r'([a-zA-Z_]+)\d*\w*'
 t_INTEIRO = r'([+-])?\d+'
@@ -86,85 +86,129 @@ t_ignore = ' \t'
 
 
 def t_ID(t):
+
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = reserved.get(t.value, 'VAR')  # verifica se é uma palavra reservada
+
     return t
 
 # Ignora comentários
 def t_COMMENT(t):
+
     r'\/\/\#.*'
+
     pass
 
 
 def analyze_text():
+
     global errors
+
     input_string = text_input.get('1.0', tk.END)
+
     if errors:
-        errors = []
+
+        errors.clear()
+
     tokenize(input_string)
     
 # Tratamento de erros
 def t_error(t):
+
     last_newline_index = t.lexer.lexdata.rfind('\n', 0, t.lexpos)
     line = t.lexer.lineno
     column = t.lexpos - last_newline_index
+
     error_message = f"Linha {line}, Coluna {column}: Caracter Invalido {t.value[0]!r}"
+
     errors.append(error_message)
+
     t.lexer.skip(1)
 
 def t_newline(t):
+
     r'\n+'
+
     t.lexer.lineno += len(t.value)
 
-
 # Cria o analisador léxico
-lexer = lex.lex(reflags=re.M)
+lexer = lex.lex()
 
 # Define a função para exibir os tokens
 def tokenize(input_string):
-    print(input_string)
+
+    # print(input_string)
+
     output_string = ''
     lexer.input(input_string)
     num_lines = input_string.count('\n')
+
     for token in lexer:
+
         output_string += 'Token: {}, valor: {}, linha: {}, coluna: {}\n'.format(token.type, token.value, token.lineno, token.lexpos - input_string.rfind("\n", 0, token.lexpos))
 
         if token.type == "STR_INCOMPLETA":
+
             error_message = f"String Mal formada {token.value!r}"
+
             errors.append(error_message)
+
         if token.type == "VAR_ERRO":
+
             error_message = f"Variavel Mal formada {token.value!r}"
+
             errors.append(error_message)
+
         if token.type == "NUM_ERRO":
+
             error_message = f"Número Mal formada {token.value!r}"
+
             errors.append(error_message)
+
         if token.type == "INTEIRO":
+
             max = (len(str(token.value)))
-            if (max < 15):
+
+            if (max > 15):
+
                 error_message = f"Entrada maior que a suportada"
+
                 errors.append(error_message)
 
     output_string += f'\nNúmero de linhas: {num_lines}'
     error_message = lexer.token()
+
     text_output.configure(state='normal')
     text_output.delete('1.0', tk.END)
     text_output.insert('1.0', output_string)
+
     if errors:
+
         text_output.insert(tk.END, "\n\nErros encontrados:\n")
+
         for error in errors:
+
             text_output.insert(tk.END, error + "\n")
+
     text_output.configure(state='disabled')
+
     lexer.lineno = 1
-    print(errors)
+
+    # print(errors)
     
 
 
 # Define a função para abrir o arquivo
 def open_file():
+
     file_path = filedialog.askopenfilename()
+
     if file_path:
+
         with open(file_path, 'r') as f:
+
             file_contents = f.read()
+            
         text_input.delete('1.0', tk.END)
         text_input.insert('1.0', file_contents)
         analyze_text()

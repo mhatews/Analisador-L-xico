@@ -1,0 +1,7 @@
+int @a = 1;
+
+int b = 12345678910;
+
+int c = @;
+
+texto d = "Matheus

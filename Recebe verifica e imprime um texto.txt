@@ -6,5 +6,5 @@ se (nome != "Wallace"){
 	escreva("Nome incorreto, tente novamente");
 }
 senao {
-	escreva("Parabéns você acertou o nome");
+	escreva("Parabens voce acertou o nome @@@$$");
 }

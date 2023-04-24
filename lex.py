@@ -110,15 +110,11 @@ def analyze_text():
     
 # Tratamento de erros
 def t_error(t):
-    last_newline_index = t.lexer.lexdata.rfind('\n', 0, t.lexpos)
     line = t.lexer.lineno
     error_message = f"Caracter Invalido {t.value[0]!r} linha {line}"
     errors.append(error_message)
     t.lexer.skip(1)
  
-
-
-
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
@@ -126,8 +122,6 @@ def t_newline(t):
 
 # Cria o analisador léxico
 lexer = lex.lex()
-
-
 
 # Define a função para exibir os tokens
 def tokenize(input_string):
@@ -163,7 +157,6 @@ def tokenize(input_string):
             text_output.insert(tk.END, error + "\n")
     text_output.configure(state='disabled')
     lexer.lineno = 1
-    print(errors)
     
 
 

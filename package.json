@@ -1,0 +1,22 @@
+{
+  "name": "analisador-l-xico",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "python src/main.py",
+    "env": "cd env/Scripts/activate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vattghern203/Analisador-L-xico.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vattghern203/Analisador-L-xico/issues"
+  },
+  "homepage": "https://github.com/Vattghern203/Analisador-L-xico#readme"
+}

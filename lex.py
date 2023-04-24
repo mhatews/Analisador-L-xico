@@ -61,7 +61,7 @@ tokens = [
 # Expressões regulares para cada token
 t_INTEIRO = r'([+-])?\d+'
 t_REAL = r'(([+-])?\d+)[.]\d+'
-t_CADEIA_CAR = r'"[^"]*"'
+t_CADEIA_CAR = r'"[^"\n]*"'
 t_ABRE_COLCH = r'\['
 t_FECHA_COLCH = r'\]'
 t_ABRE_CHAV = r'{'

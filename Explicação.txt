@@ -1,0 +1,18 @@
+O projeto foi desenvolvido na linguagem python.
+
+IDE Utilizada foi Visual Studio Code.
+
+1 -  Instalar a biblioteca ply
+
+pip install ply
+
+2 - rodar o código fonte.
+
+Apartir dai a interface vai abrir, ai existe duas opções:
+
+1 - Abrir um arquivo txt com o código a ser analisado(Botão Abrir Arquivo)
+
+2 - Digitar o código a ser analisado do zero e apertar no botão Analisar texto.
+
+Automaticamente o texto vai ser analisado e você tera acesso ao Output com as informações
+dos tokens e erros encontrados.

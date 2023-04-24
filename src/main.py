@@ -132,7 +132,7 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 # Cria o analisador léxico
-lexer = lex.lex()
+lexer = lex.lex(reflags=re.MULTILINE)
 
 # Define a função para exibir os tokens
 def tokenize(input_string):
@@ -187,6 +187,8 @@ def tokenize(input_string):
         text_output.insert(tk.END, "\n\nErros encontrados:\n")
 
         for error in errors:
+
+            print(error)
 
             text_output.insert(tk.END, error + "\n")
 
